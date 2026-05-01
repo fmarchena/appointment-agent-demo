@@ -9,11 +9,11 @@
 
 ## 2. Database
 
-- [ ] 2.1 Create appointments table.
-- [ ] 2.2 Create appointment_rules table.
-- [ ] 2.3 Create blocked_days table.
-- [ ] 2.4 Create services table.
-- [ ] 2.5 Create guardrail_logs table.
+- [x] 2.1 Create appointments table.
+- [x] 2.2 Create appointment_rules table.
+- [x] 2.3 Create blocked_days table.
+- [x] 2.4 Create services table.
+- [x] 2.5 Create guardrail_logs table.
 
 ## 3. Admin Rules
 
@@ -26,28 +26,28 @@
 
 ## 4. Appointment API
 
-- [ ] 4.1 Create endpoint to check availability.
+- [x] 4.1 Create endpoint to check availability.
 - [ ] 4.2 Create endpoint to create appointment.
 - [ ] 4.3 Prevent double booking.
 - [ ] 4.4 Validate appointment status.
 
 ## 5. Guardrail Engine
 
-- [ ] 5.1 Implement ALLOW decision.
-- [ ] 5.2 Implement STEER decision for invalid time.
-- [ ] 5.3 Implement STEER decision for max people.
-- [ ] 5.4 Implement BLOCK decision for missing date.
-- [ ] 5.5 Implement BLOCK decision for missing service.
-- [ ] 5.6 Implement STEER decision for blocked day.
-- [ ] 5.7 Log all guardrail decisions.
+- [x] 5.1 Implement ALLOW decision.
+- [x] 5.2 Implement STEER decision for invalid time.
+- [x] 5.3 Implement STEER decision for max people.
+- [x] 5.4 Implement BLOCK decision for missing date.
+- [x] 5.5 Implement BLOCK decision for missing service.
+- [x] 5.6 Implement STEER decision for blocked day.
+- [x] 5.7 Log all guardrail decisions.
 
 ## 6. AI Chat Agent
 
-- [ ] 6.1 Create chat endpoint.
-- [ ] 6.2 Extract appointment intent.
-- [ ] 6.3 Build proposed appointment payload.
-- [ ] 6.4 Call guardrail engine.
-- [ ] 6.5 Ask user for confirmation before creating appointment.
+- [x] 6.1 Create chat endpoint.
+- [x] 6.2 Extract appointment intent.
+- [x] 6.3 Build proposed appointment payload.
+- [x] 6.4 Call guardrail engine.
+- [x] 6.5 Ask user for confirmation before creating appointment.
 - [ ] 6.6 Create appointment after confirmation.
 
 ## 7. Customer Frontend

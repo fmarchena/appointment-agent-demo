@@ -1,0 +1,31 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: backend/docker/php/Dockerfile
+    container_name: appointment-agent-backend
+    working_dir: /var/www/html
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "8000:8000"
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: appointment-agent-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: appointment_agent
+      MYSQL_USER: appointment_user
+      MYSQL_PASSWORD: appointment_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - appointment_mysql_data:/var/lib/mysql
+
+volumes:
+  appointment_mysql_data:
