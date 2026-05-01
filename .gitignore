@@ -1,0 +1,45 @@
+# ============================================================
+# Root-level .gitignore — appointment-agent-demo monorepo
+# Sub-packages (backend/, frontend/) have their own .gitignore
+# ============================================================
+
+# ── Environment files ────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ── macOS ────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+# ── IDEs & editors ───────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.iml
+.nova/
+.zed/
+*.suo
+*.sw?
+
+# ── Docker runtime data ──────────────────────────────────────
+docker/data/
+docker/mysql/
+*.pid
+
+# ── Node (root-level, e.g. tooling scripts) ──────────────────
+node_modules/
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/
+
+# ── OS misc ──────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini

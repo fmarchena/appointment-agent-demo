@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Services\GuardrailEngine;
+use App\Services\GrokAppointmentAgent;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function message(Request $request, GuardrailEngine $guardrailEngine): JsonResponse
+    public function message(Request $request, GuardrailEngine $guardrailEngine, GrokAppointmentAgent $agent): JsonResponse
     {
         $data = $request->validate([
             'message' => ['required', 'string'],
         ]);
 
-        $message = strtolower($data['message']);
+        $message = $data['message'];
 
-        $payload = $this->extractAppointmentPayload($message);
+        $payload = $agent->extractPayload($message);
 
         $guardrailResult = $guardrailEngine->evaluate($payload);
 
@@ -129,6 +130,8 @@ class ChatController extends Controller
         return match ($guardrailResult['reason']) {
             'Date is required.' => 'Necesito que me indiques la fecha para revisar disponibilidad.',
             'Service is required.' => 'Necesito que me indiques el servicio que deseas agendar.',
+            'Service is not available.' => 'Ese servicio no está disponible. Por favor elige un servicio activo.',
+            'Payload requires correction, but autocorrection is disabled.' => 'La solicitud necesita corrección, pero la autocorrección está desactivada por el admin.',
             'Time is required.' => 'Necesito que me indiques la hora de la cita.',
             default => $guardrailResult['reason'],
         };

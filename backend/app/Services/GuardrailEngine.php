@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Appointment;
 use App\Models\AppointmentRule;
+use App\Models\AppointmentService;
 use App\Models\BlockedDay;
 use App\Models\GuardrailLog;
 use Carbon\Carbon;
@@ -22,6 +23,14 @@ class GuardrailEngine
 
         if (empty($payload['service'])) {
             return $this->block($originalPayload, null, 'Service is required.');
+        }
+
+        $serviceExists = AppointmentService::where('code', $payload['service'])
+            ->where('active', true)
+            ->exists();
+
+        if (!$serviceExists) {
+            return $this->block($originalPayload, null, 'Service is not available.');
         }
 
         if (empty($payload['date'])) {
@@ -107,9 +116,35 @@ class GuardrailEngine
             ->where('service', $payload['service'])
             ->exists();
 
-        if ($slotTaken) {
-            return $this->block($originalPayload, $payload, 'Requested slot is already booked.');
-        }
+       if ($slotTaken) {
+    $newTime = Carbon::parse($payload['time'])->addMinutes((int) $rules->appointment_duration_minutes);
+    $businessEndTime = Carbon::parse($rules->business_end_time);
+
+    while (
+        $newTime->lessThan($businessEndTime) &&
+        Appointment::where('appointment_date', $payload['date'])
+            ->where('appointment_time', $newTime->format('H:i:s'))
+            ->where('service', $payload['service'])
+            ->exists()
+    ) {
+        $newTime->addMinutes((int) $rules->appointment_duration_minutes);
+    }
+
+    if ($newTime->lessThan($businessEndTime)) {
+        $corrections[] = [
+            'field' => 'time',
+            'from' => $payload['time'],
+            'to' => $newTime->format('H:i:s'),
+            'reason' => 'Requested slot is already booked. Offering next available slot.',
+        ];
+
+        $payload['time'] = $newTime->format('H:i:s');
+
+        return $this->steer($originalPayload, $payload, $corrections);
+    }
+
+    return $this->block($originalPayload, $payload, 'Requested slot is already booked and no later slot is available.');
+}
 
         if (!empty($corrections)) {
             return $this->steer($originalPayload, $payload, $corrections);
@@ -136,6 +171,16 @@ class GuardrailEngine
 
     private function steer(array $originalPayload, array $payload, array $corrections): array
     {
+        $rules = AppointmentRule::query()->first();
+
+        if ($rules && !$rules->allow_autocorrection) {
+            return $this->block(
+                $originalPayload,
+                $payload,
+                'Payload requires correction, but autocorrection is disabled.'
+            );
+        }
+
         GuardrailLog::create([
             'original_payload' => $originalPayload,
             'corrected_payload' => $payload,
