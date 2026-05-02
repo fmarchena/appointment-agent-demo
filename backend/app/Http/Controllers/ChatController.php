@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Services\GuardrailEngine;
-use App\Services\GrokAppointmentAgent;
+use App\Services\LaravelAiAppointmentAgent;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function message(Request $request, GuardrailEngine $guardrailEngine, GrokAppointmentAgent $agent): JsonResponse
+    public function message(Request $request, GuardrailEngine $guardrailEngine, LaravelAiAppointmentAgent $agent): JsonResponse
     {
         $data = $request->validate([
             'message' => ['required', 'string'],
